@@ -1,0 +1,45 @@
+#new-game-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  #config-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2em;
+
+    .input-form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1em;
+
+      .form-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1em;
+
+        .p-inputgroup {
+          width: unset;
+        }
+
+        #sets, #legs {
+          max-width: 15rem;
+        }
+      }
+    }
+
+    #start-button {
+      margin-left: auto;
+    }
+  }
+}
+
+.p-datatable-tbody {
+  min-height: 35rem
+}

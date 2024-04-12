@@ -1,2 +1,39 @@
-@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/themes/lara-dark-amber/theme.css";
 @import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+
+root {
+  // PrimeNG vars
+  //--text-color: #101010;	// Font text color.
+  //--text-secondary-color: black;	//	Muted font text color with a secondary level.
+  //--primary-color: #2a3c00;	//	Primary color of the theme.
+  //--primary-color-text: black;	//	Text color when background is primary color.
+  //--font-family: black;	//	Font family of the theme.
+  //--inline-spacing: black;	//	Spacing between to adjacent items.
+  //--border-radius: black;	//	Common border radius of elements.
+  //--focus-ring: black;	//	Box shadow of a focused element.
+  //--mask-bg: black;	//	Background of an overlay mask.
+  //--highlight-bg: black;	//	Background of a highlighted element.
+  //--highlight-text-color: black;	// Text color of a highlighted element.
+}
+
+
+body {
+  background: var(--surface-ground);
+  height: 100vh;
+  margin: 0;
+}
+
+span {
+  &[primary] {
+    color: var(--primary-color);
+  }
+}
+
+.p-selectbutton.p-buttonset.p-component{
+  display: flex;
+
+  .p-ripple.p-element.p-button.p-component {
+    flex: auto;
+  }
+}
