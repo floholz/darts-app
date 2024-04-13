@@ -12,6 +12,7 @@ import {InputNumberModule} from "primeng/inputnumber";
 import {VirtualKeyboardComponent} from "../../shared/components/virtual-keyboard/virtual-keyboard.component";
 import {NgIf} from "@angular/common";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
+import {DeviceDetectorService} from "ngx-device-detector";
 
 @Component({
   selector: 'app-play-page',
@@ -40,7 +41,10 @@ export class PlayPageComponent {
   private readonly players: Player[];
   private readonly game: Game;
 
-  constructor(activatedRoute: ActivatedRoute) {
+  constructor(activatedRoute: ActivatedRoute, deviceService: DeviceDetectorService) {
+    this.showVirtualKeyboard = deviceService.isMobile() || deviceService.isTablet();
+    console.log(deviceService.getDeviceInfo());
+
     this.config = activatedRoute.snapshot.params as DartsConfig;
     this.players = this.parsePlayersFromQueryParams(activatedRoute.snapshot.queryParams);
     console.log(this.config);

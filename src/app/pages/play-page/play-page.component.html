@@ -1,14 +1,7 @@
 <div id="play-page">
   <p-inputGroup class="score-input">
     <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()"/>
-    <p-button [icon]="'fa fa-user'" (click)="toggleVirtualKeyboard()">
-        <!--
-      <ng-template pTemplate="buttonicon">
-        <span class="material-icons">keyboard</span>
-        <span class="material-symbols-outlined">keyboard</span>
-      </ng-template>
-        -->
-    </p-button>
+    <p-button [icon]="'fas fa-keyboard'" (click)="toggleVirtualKeyboard()"></p-button>
   </p-inputGroup>
   <app-virtual-keyboard class="vkb" *ngIf="showVirtualKeyboard" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()"></app-virtual-keyboard>
 </div>
