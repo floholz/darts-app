@@ -4,7 +4,7 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 
-root {
+:root {
   // PrimeNG vars
   //--text-color: #101010;	// Font text color.
   //--text-secondary-color: black;	//	Muted font text color with a secondary level.
@@ -17,6 +17,8 @@ root {
   //--mask-bg: black;	//	Background of an overlay mask.
   //--highlight-bg: black;	//	Background of a highlighted element.
   //--highlight-text-color: black;	// Text color of a highlighted element.
+
+  --page-padding: 1.5rem 2rem 1rem;
 }
 
 
@@ -32,6 +34,19 @@ span {
   }
 }
 
+/**********************************************************************************************************************/
+/* pStyleClass and styleClass overrides */
+.key-button {
+  width: auto;
+  font-size: inherit;
+
+  .pi {
+    font-size: inherit;
+  }
+}
+
+/**********************************************************************************************************************/
+/* primeNG style overrides */
 .p-selectbutton.p-buttonset.p-component{
   display: flex;
 
@@ -40,6 +55,20 @@ span {
   }
 }
 
-.key-button {
-  width: auto;
+.p-inputgroup > p-button button.p-button,
+.p-inputgroup > p-inputnumber input.p-inputnumber-input {
+  border-radius: 0;
+  margin: 0;
+}
+
+.p-inputgroup > p-button:last-child button.p-button,
+.p-inputgroup p-inputnumber:last-child input.p-inputnumber-input {
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.p-inputgroup > p-button:first-child button.p-button,
+.p-inputgroup p-inputnumber:first-child input.p-inputnumber-input {
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }

@@ -16,6 +16,7 @@ import {StyleClassModule} from "primeng/styleclass";
 export class VirtualKeyComponent {
 
   @Input({required: true}) keys!: KBCode;
+  @Input() fontSize?: string;
   @Input() text?: string;
   @Input() btnStyle?: "secondary" | "success" | "info" | "warning" | "help" | "danger" | "contrast"
   @Input() icon?: string;

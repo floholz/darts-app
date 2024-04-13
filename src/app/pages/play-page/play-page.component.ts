@@ -13,6 +13,7 @@ import {VirtualKeyboardComponent} from "../../shared/components/virtual-keyboard
 import {NgIf} from "@angular/common";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {DeviceDetectorService} from "ngx-device-detector";
+import {StyleClassModule} from "primeng/styleclass";
 
 @Component({
   selector: 'app-play-page',
@@ -25,7 +26,8 @@ import {DeviceDetectorService} from "ngx-device-detector";
     ReactiveFormsModule,
     VirtualKeyboardComponent,
     NgIf,
-    InputGroupAddonModule
+    InputGroupAddonModule,
+    StyleClassModule
   ],
   templateUrl: './play-page.component.html',
   styleUrl: './play-page.component.scss'

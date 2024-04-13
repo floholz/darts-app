@@ -20,6 +20,7 @@ export class VirtualKeyboardComponent implements OnInit, OnDestroy {
   protected readonly PrimeIcons = PrimeIcons;
 
   @Input() dataFormControl: FormControl<number> = new FormControl();
+  @Input() defaultFontSize?: string;
   @Output() onChange = new EventEmitter<string | number>();
   @Output() onKeyPressed = new EventEmitter<KBCode>();
   @Output() onSubmit = new EventEmitter<void>();
@@ -43,7 +44,13 @@ export class VirtualKeyboardComponent implements OnInit, OnDestroy {
   }
 
   onBackspacePressed(key: KBCode): void {
-    this.dataFormControl.patchValue(Math.floor(this.dataFormControl.value/10));
+    const value = Math.floor(this.dataFormControl.value/10);
+    if (value === 0) {
+      this.dataFormControl.reset();
+    } else {
+      this.dataFormControl.patchValue(value);
+    }
+
     this.onKeyPressed.emit(key);
   }
 

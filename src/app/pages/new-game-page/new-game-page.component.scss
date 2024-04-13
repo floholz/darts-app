@@ -2,19 +2,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   height: 100%;
+  padding: var(--page-padding);
 
   #config-area {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 2em;
+    overflow: auto;
 
     .input-form {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       gap: 1em;
 
       .form-row {

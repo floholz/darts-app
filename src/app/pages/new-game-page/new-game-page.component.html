@@ -57,9 +57,7 @@
 
     <div class="input-form">
       <label for="players">Players</label>
-      <p-table id="players" [value]="players" [totalRecords]="players.length" dataKey="idx" editMode="cell" [tableStyle]="{'min-width': '50rem'}" [paginator]="true" [rows]="5" [showCurrentPageReport]="true"
-               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-               [rowsPerPageOptions]="[5, 10, 20]">
+      <p-table id="players" [value]="players" [totalRecords]="players.length" dataKey="idx" editMode="cell"  [paginator]="true" [rows]="4" [rowsPerPageOptions]="[4, 10, 100]">
         <ng-template pTemplate="header">
           <tr>
             <th style="width:10%"></th>

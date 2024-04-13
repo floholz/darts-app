@@ -1,19 +1,19 @@
 <div class="virtual-keyboard numpad">
-  <app-virtual-key [keys]="Key.Numpad7" [text]="'7'" (onKeyPressed)="onNumberPressed($event, 7)"></app-virtual-key>
-  <app-virtual-key [keys]="Key.Numpad8" [text]="'8'" (onKeyPressed)="onNumberPressed($event, 8)"></app-virtual-key>
-  <app-virtual-key [keys]="Key.Numpad9" [text]="'9'" (onKeyPressed)="onNumberPressed($event, 9)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad7" [text]="'7'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 7)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad8" [text]="'8'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 8)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad9" [text]="'9'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 9)"></app-virtual-key>
 
-  <app-virtual-key [keys]="Key.Backspace" [btnStyle]="'secondary'" [icon]="PrimeIcons.ARROW_LEFT" [iconOnly]="true" (onKeyPressed)="onBackspacePressed($event)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Backspace" [btnStyle]="'secondary'" [icon]="'fas fa-delete-left'" [iconOnly]="true" [fontSize]="defaultFontSize" (onKeyPressed)="onBackspacePressed($event)"></app-virtual-key>
 
-  <app-virtual-key [keys]="Key.Numpad4" [text]="'4'" (onKeyPressed)="onNumberPressed($event, 4)"></app-virtual-key>
-  <app-virtual-key [keys]="Key.Numpad5" [text]="'5'" (onKeyPressed)="onNumberPressed($event, 5)"></app-virtual-key>
-  <app-virtual-key [keys]="Key.Numpad6" [text]="'6'" (onKeyPressed)="onNumberPressed($event, 6)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad4" [text]="'4'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 4)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad5" [text]="'5'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 5)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad6" [text]="'6'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 6)"></app-virtual-key>
 
-  <app-virtual-key [keys]="Key.Enter" class="enter" [btnStyle]="'info'" [icon]="PrimeIcons.ARROW_CIRCLE_RIGHT" [iconOnly]="true" (onKeyPressed)="onEnterPressed($event)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Enter" class="enter" [btnStyle]="'info'" [icon]="'fas fa-check'" [iconOnly]="true" [fontSize]="'calc(' + defaultFontSize + '*1.5)'" (onKeyPressed)="onEnterPressed($event)"></app-virtual-key>
 
-  <app-virtual-key [keys]="Key.Numpad1" [text]="'1'" (onKeyPressed)="onNumberPressed($event, 1)"></app-virtual-key>
-  <app-virtual-key [keys]="Key.Numpad2" [text]="'2'" (onKeyPressed)="onNumberPressed($event, 2)"></app-virtual-key>
-  <app-virtual-key [keys]="Key.Numpad3" [text]="'3'" (onKeyPressed)="onNumberPressed($event, 3)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad1" [text]="'1'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 1)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad2" [text]="'2'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 2)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad3" [text]="'3'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 3)"></app-virtual-key>
 
-  <app-virtual-key [keys]="Key.Numpad0" class="zero" [text]="'0'" (onKeyPressed)="onNumberPressed($event, 0)"></app-virtual-key>
+  <app-virtual-key [keys]="Key.Numpad0" class="zero" [text]="'0'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 0)"></app-virtual-key>
 </div>
