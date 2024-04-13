@@ -10,3 +10,8 @@ export enum Checkout {
   DOUBLE = 2,
   TRIPLE = 3,
 }
+
+export type DartScore = number | undefined
+export type VisitScores = [DartScore, DartScore, DartScore]
+export type LegScores = VisitScores[]
+export type SetScores = LegScores[]

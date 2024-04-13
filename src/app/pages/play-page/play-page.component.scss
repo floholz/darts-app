@@ -1,0 +1,15 @@
+#play-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+
+  .score-input {
+    margin: 0 25%;
+    width: 50%;
+  }
+
+  .vkb {
+    margin: 2rem 10% 0;
+  }
+}
