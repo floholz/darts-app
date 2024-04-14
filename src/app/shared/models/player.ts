@@ -11,6 +11,7 @@ export enum PlayerType  {
 }
 
 export type GamePlayer = {
+  id: string,
   name: string,
   color: string,
   score: number,

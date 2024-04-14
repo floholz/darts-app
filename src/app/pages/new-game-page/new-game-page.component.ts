@@ -17,6 +17,7 @@ import {ColorPickerModule} from "primeng/colorpicker";
 import {Params, Router} from "@angular/router";
 import {Player} from "../../shared/models/player";
 import {Checkout} from "../../shared/models/darts";
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-new-game-page',
@@ -84,6 +85,7 @@ export class NewGamePageComponent implements OnInit{
       this.newGameForm.controls['sets'].value,
       this.newGameForm.controls['legs'].value,
       this.newGameForm.controls['checkout'].value,
+      uuidv4(),
     ], {
       queryParams: this.buildQueryParams(),
     }).catch(err => console.log(err));

@@ -1,7 +1,37 @@
-<div id="play-page">
-  <p-inputGroup class="score-input">
-    <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()"/>
-    <p-button [icon]="'fas fa-keyboard'" [severity]="showVirtualKeyboard ? undefined : 'secondary'" (click)="toggleVirtualKeyboard()"></p-button>
-  </p-inputGroup>
-  <app-virtual-keyboard class="vkb" defaultFontSize="3rem" *ngIf="showVirtualKeyboard" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()"></app-virtual-keyboard>
+<div id="play-page" >
+  <div id="score-area">
+    <p-inputGroup class="score-input">
+      <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()"/>
+      <p-button [icon]="'fas fa-keyboard'" [severity]="showVirtualKeyboard ? undefined : 'secondary'" (click)="toggleVirtualKeyboard()"></p-button>
+    </p-inputGroup>
+    <p-carousel id="player-carousel" [value]="game.players" [numVisible]="5" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+      <ng-template let-player pTemplate="item">
+        <div class="player-field" [style]="{'--player-color': player.color}">
+          <div class="player-header">
+            <i [class]="PrimeIcons.USER" [style]="{'font-size': 'inherit', 'padding': '4px', 'background-color': player.color, color: '#fff' }"></i>
+            <span class="font-bold">{{player.name}}</span>
+          </div>
+          <div class="player-content" [class.active-player]="game.players[game.activePlayer].id === player.id">
+            <div class="rest-score">
+              {{player.score}}
+            </div>
+            <div class="visit header">
+              <span> Dart</span>
+              <span class="dart-nr">1</span>
+              <span class="dart-nr">2</span>
+              <span class="dart-nr">3</span>
+            </div>
+            <p-divider></p-divider>
+            <div class="visit" *ngFor="let visit of player['history'][game.activeSet][game.activeLeg]; index as vi">
+              <span class="visit-nr">{{vi+1}}:</span>
+              <span *ngFor="let dart of visit">{{dart}}</span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-carousel>
+  </div>
+  <div id="input-area" *ngIf="showVirtualKeyboard">
+    <app-virtual-keyboard id="virtual-keyboard" defaultFontSize="3rem" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()"></app-virtual-keyboard>
+  </div>
 </div>

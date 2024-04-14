@@ -1,16 +1,148 @@
 #play-page {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 1rem;
   height: 100%;
   padding: var(--page-padding);
-  gap: 2rem;
 
-  .score-input {
-    margin: 0 25%;
-    width: 50%;
+  #score-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .score-input {
+      max-width: 50vw;
+      margin: auto;
+    }
+
+    #player-carousel {
+      flex: 1;
+      display: grid;
+
+      .player-field {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        height: 100%;
+
+        .player-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          border: 1px solid var(--border-color);
+          border-radius: var(--start-radius) var(--end-radius) var(--end-radius) var(--start-radius);
+          overflow: hidden;
+          font-size: 1.5rem;
+        }
+
+        .player-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 4px;
+          border: 1px solid var(--border-color);
+          border-radius: var(--start-radius) var(--end-radius) var(--end-radius) var(--start-radius);
+
+          &.active-player {
+            border-color: var(--player-color);
+          }
+
+          .rest-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+          }
+
+          .visit {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+
+            .visit-nr {
+              font-size: 0.8em;
+              color: var(--gray-400);
+            }
+
+            &.header {
+              .dart-nr {
+                background: white;
+                color: var(--surface-ground);
+                border-radius: 50% 50% 50% 15%;
+                aspect-ratio: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 1.2rem;
+                font-size: 0.8rem;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
-  .vkb {
-    margin: 0 10%;
+  #input-area {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+
+    #virtual-keyboard {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+@media (max-aspect-ratio: 5/4) {
+  #play-page {
+    flex-direction: column;
+
+    #input-area {
+      flex-direction: row;
+      width: auto;
+      height: 50%;
+
+      #virtual-keyboard {
+        flex-direction: row;
+      }
+    }
+  }
+}
+
+:host ::ng-deep {
+  .p-carousel-content {
+    //flex: 1;
+    height: 100%;
+    .p-carousel-container {
+      //flex: 1;
+      height: 100%;
+      .p-carousel-items-content  {
+        .p-carousel-items-container {
+          height: 100%;
+
+          .p-carousel-item {
+            max-width: 30vw;
+          }
+
+          --start-radius: 0;
+          --end-radius: 0;
+          .p-carousel-item-start {
+            --start-radius: var(--border-radius);
+          }
+          .p-carousel-item-end {
+            --end-radius: var(--border-radius);
+          }
+        }
+      }
+    }
   }
 }

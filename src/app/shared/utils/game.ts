@@ -1,8 +1,10 @@
 import {DartsConfig, LegScores, SetScores} from "../models/darts";
 import {GamePlayer, Player} from "../models/player";
 import {FormControl} from "@angular/forms";
+import { v4 as uuidv4 } from 'uuid';
 
 export class Game {
+  uuid: string;
   config: DartsConfig;
   players: GamePlayer[] = [];
 
@@ -13,7 +15,8 @@ export class Game {
   activePlayer = 0;
   startingPlayer = 0;
 
-  constructor(config: DartsConfig, players: Player[]) {
+  constructor(config: DartsConfig, players: Player[], uuid?: string) {
+    this.uuid = uuid??uuidv4();
     this.config = config;
     this.initPlayers(config, players);
   }
@@ -50,9 +53,10 @@ export class Game {
   }
 
   private initPlayers(config: DartsConfig, pls: Player[]) {
-    pls.forEach(player => {
+    pls.forEach((player, idx) => {
       const history: SetScores[] = [... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
       this.players.push({
+        id: 'p-' + idx,
         name: player.name,
         color: player.color,
         score: this.config.score,

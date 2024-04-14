@@ -10,10 +10,15 @@ import {ButtonModule} from "primeng/button";
 import {PrimeIcons} from "primeng/api";
 import {InputNumberModule} from "primeng/inputnumber";
 import {VirtualKeyboardComponent} from "../../shared/components/virtual-keyboard/virtual-keyboard.component";
-import {NgIf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {DeviceDetectorService} from "ngx-device-detector";
 import {StyleClassModule} from "primeng/styleclass";
+import {FieldsetModule} from "primeng/fieldset";
+import {AvatarModule} from "primeng/avatar";
+import {ScrollPanelModule} from "primeng/scrollpanel";
+import {CarouselModule} from "primeng/carousel";
+import {DividerModule} from "primeng/divider";
 
 @Component({
   selector: 'app-play-page',
@@ -27,7 +32,13 @@ import {StyleClassModule} from "primeng/styleclass";
     VirtualKeyboardComponent,
     NgIf,
     InputGroupAddonModule,
-    StyleClassModule
+    StyleClassModule,
+    FieldsetModule,
+    AvatarModule,
+    NgForOf,
+    ScrollPanelModule,
+    CarouselModule,
+    DividerModule
   ],
   templateUrl: './play-page.component.html',
   styleUrl: './play-page.component.scss'
@@ -38,27 +49,55 @@ export class PlayPageComponent {
 
   scoreFormControl = new FormControl();
   showVirtualKeyboard = false;
+  responsiveOptions = [
+    {
+      breakpoint: '3000px',
+      numVisible: 5,
+      numScroll: 1
+    },
+    {
+      breakpoint: '2000px',
+      numVisible: 4,
+      numScroll: 1
+    },
+    {
+      breakpoint: '1500px',
+      numVisible: 3,
+      numScroll: 1
+    },
+    {
+      breakpoint: '900px',
+      numVisible: 2,
+      numScroll: 1
+    },
+    {
+      breakpoint: '350px',
+      numVisible: 1,
+      numScroll: 1
+    }
+  ];
 
-  private readonly config: DartsConfig;
-  private readonly players: Player[];
-  private readonly game: Game;
+  readonly game: Game;
 
   constructor(activatedRoute: ActivatedRoute, deviceService: DeviceDetectorService) {
     this.showVirtualKeyboard = deviceService.isMobile() || deviceService.isTablet();
     console.log(deviceService.getDeviceInfo());
 
-    this.config = activatedRoute.snapshot.params as DartsConfig;
-    this.players = this.parsePlayersFromQueryParams(activatedRoute.snapshot.queryParams);
-    console.log(this.config);
-    console.log(this.players);
-    this.game = new Game(this.config, this.players);
+    const config = activatedRoute.snapshot.params as DartsConfig;
+    const players = this.parsePlayersFromQueryParams(activatedRoute.snapshot.queryParams);
+    console.log(config);
+    console.log(players);
+    this.game = new Game(config, players, activatedRoute.snapshot.params['uuid']);
   }
 
   addScore() {
     if (this.scoreFormControl.value == null) return;
 
     console.log('score:', this.scoreFormControl.value);
-    this.game.addScore(this.scoreFormControl.value);
+    //this.game.addScore(this.scoreFormControl.value);
+    for (let i = 0; i < this.scoreFormControl.value; i++) {
+      this.game.addScore(1);
+    }
     this.scoreFormControl.reset();
   }
 
