@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {ActivatedRoute, Params} from "@angular/router";
-import {Player} from "../../shared/models/player";
+import {ActivatedRoute, ActivatedRouteSnapshot, Params, Router} from "@angular/router";
+import {buildQueryParamsFromPlayers, parsePlayersFromQueryParams, Player} from "../../shared/models/player";
 import {DartsConfig} from "../../shared/models/darts";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {Game} from "../../shared/utils/game";
@@ -17,8 +17,10 @@ import {StyleClassModule} from "primeng/styleclass";
 import {FieldsetModule} from "primeng/fieldset";
 import {AvatarModule} from "primeng/avatar";
 import {ScrollPanelModule} from "primeng/scrollpanel";
-import {CarouselModule} from "primeng/carousel";
+import {Carousel, CarouselModule} from "primeng/carousel";
 import {DividerModule} from "primeng/divider";
+import {LocalStorageService} from "../../shared/services/local-storage.service";
+import {gameUuidGuard} from "../../shared/guards/game-uuid.guard";
 
 @Component({
   selector: 'app-play-page',
@@ -46,89 +48,79 @@ import {DividerModule} from "primeng/divider";
 export class PlayPageComponent {
 
   protected readonly PrimeIcons = PrimeIcons;
-
-  scoreFormControl = new FormControl();
-  showVirtualKeyboard = false;
-  responsiveOptions = [
+  protected readonly game: Game;
+  protected scoreFormControl = new FormControl();
+  protected showVirtualKeyboard = false;
+  protected responsiveOptions = [
     {
-      breakpoint: '3000px',
-      numVisible: 5,
-      numScroll: 1
-    },
-    {
-      breakpoint: '2000px',
-      numVisible: 4,
-      numScroll: 1
-    },
-    {
-      breakpoint: '1500px',
-      numVisible: 3,
-      numScroll: 1
-    },
-    {
-      breakpoint: '900px',
+      breakpoint: '749px',
       numVisible: 2,
       numScroll: 1
     },
     {
-      breakpoint: '350px',
+      breakpoint: '199px',
       numVisible: 1,
       numScroll: 1
-    }
+    },
   ];
 
-  readonly game: Game;
-
-  constructor(activatedRoute: ActivatedRoute, deviceService: DeviceDetectorService) {
+  constructor(
+    deviceService: DeviceDetectorService,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
+    private readonly localStorageService: LocalStorageService,
+  ) {
     this.showVirtualKeyboard = deviceService.isMobile() || deviceService.isTablet();
     console.log(deviceService.getDeviceInfo());
 
-    const config = activatedRoute.snapshot.params as DartsConfig;
-    const players = this.parsePlayersFromQueryParams(activatedRoute.snapshot.queryParams);
-    console.log(config);
-    console.log(players);
-    this.game = new Game(config, players, activatedRoute.snapshot.params['uuid']);
+    this.game = Game.parseGame(activatedRoute.snapshot.data['game']);
+    this.fixQueryParams();
   }
 
   addScore() {
     if (this.scoreFormControl.value == null) return;
 
     console.log('score:', this.scoreFormControl.value);
-    //this.game.addScore(this.scoreFormControl.value);
-    for (let i = 0; i < this.scoreFormControl.value; i++) {
-      this.game.addScore(1);
-    }
+    this.game.addScore(this.scoreFormControl.value);
     this.scoreFormControl.reset();
+
+    this.localStorageService.saveGame(this.game);
   }
 
-  toggleVirtualKeyboard() {
+  toggleVirtualKeyboard(elem: HTMLElement) {
     this.showVirtualKeyboard = !this.showVirtualKeyboard;
+    setTimeout(() => {
+      this.getCarouselNumber(elem);
+      this.updateCarousel(true);
+    });
   }
 
-  private parsePlayersFromQueryParams(params: Params): Player[] {
-    const players: Player[] = [];
-
-    let idx = 1;
-    let tempPlayer = this.buildPlayerFromString(params[`p${idx}`]);
-    while(tempPlayer) {
-      players.push(tempPlayer);
-      idx++;
-      tempPlayer = this.buildPlayerFromString(params[`p${idx}`]);
+  getCarouselNumber(elem: HTMLElement) {
+    let num = Math.floor(elem.clientWidth / 250);
+    num = Math.min(num, this.game.players.length);
+    if (this.carouselNumVisible !== num) {
+      console.log('carousel-number:', num);
+      this.carouselNumVisible = num;
+      this.updateCarousel(true);
     }
-
-    return players;
   }
 
-  private buildPlayerFromString(str: string): Player | null {
-    if (!str || str.length < 8) {
-      return null;
-    }
 
-    let color = str.slice(0, 7);
-    if (color[0] !== '#') {
-      return null;
+  protected carouselNumVisible = 1;
+  protected carouselState = true;
+  private updateCarousel(state: boolean) {
+    if (state) {
+      this.carouselState = false
+      this.updateCarousel(false)
+      return;
     }
-    const name = str.slice(7);
-    return {color, name};
+    this.carouselState = true
+  }
+
+  private fixQueryParams() {
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: buildQueryParamsFromPlayers(this.game.players),
+    })
   }
 }

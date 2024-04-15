@@ -1,7 +1,5 @@
 import {DartsConfig, LegScores, SetScores} from "../models/darts";
 import {GamePlayer, Player} from "../models/player";
-import {FormControl} from "@angular/forms";
-import { v4 as uuidv4 } from 'uuid';
 
 export class Game {
   uuid: string;
@@ -15,10 +13,21 @@ export class Game {
   activePlayer = 0;
   startingPlayer = 0;
 
-  constructor(config: DartsConfig, players: Player[], uuid?: string) {
-    this.uuid = uuid??uuidv4();
+  constructor(config: DartsConfig, players: Player[], uuid: string) {
+    this.uuid = uuid;
     this.config = config;
     this.initPlayers(config, players);
+  }
+
+  public static parseGame(game: Game): Game {
+    const newGame = new Game(game.config, game.players, game.uuid);
+    newGame.activePlayer = game.activePlayer;
+    newGame.activeVisit = game.activeVisit;
+    newGame.activeLeg = game.activeLeg;
+    newGame.activeSet = game.activeSet;
+    newGame.activePlayer = game.activePlayer;
+    newGame.startingPlayer = game.startingPlayer;
+    return newGame;
   }
 
   public addScore(score: number): void {

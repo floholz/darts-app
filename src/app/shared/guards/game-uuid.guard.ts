@@ -10,5 +10,5 @@ export const gameUuidGuard: CanActivateFn = (route, state) => {
     route.params['legs'],
     route.params['checkout'],
     uuidv4(),
-  ], { queryParams: route.queryParams });
+  ], { queryParamsHandling: "preserve" });
 };

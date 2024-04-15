@@ -1,10 +1,10 @@
 <div id="play-page" >
-  <div id="score-area">
+  <div id="score-area" #scoreArea (window:resize)="getCarouselNumber(scoreArea)">
     <p-inputGroup class="score-input">
       <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()"/>
-      <p-button [icon]="'fas fa-keyboard'" [severity]="showVirtualKeyboard ? undefined : 'secondary'" (click)="toggleVirtualKeyboard()"></p-button>
+      <p-button [icon]="'fas fa-keyboard'" [severity]="showVirtualKeyboard ? undefined : 'secondary'" (click)="toggleVirtualKeyboard(scoreArea)"></p-button>
     </p-inputGroup>
-    <p-carousel id="player-carousel" [value]="game.players" [numVisible]="5" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+    <p-carousel *ngIf="carouselState" id="player-carousel" [value]="game.players" [numVisible]="carouselNumVisible" [numScroll]="1" [responsiveOptions]="responsiveOptions">
       <ng-template let-player pTemplate="item">
         <div class="player-field" [style]="{'--player-color': player.color}">
           <div class="player-header">

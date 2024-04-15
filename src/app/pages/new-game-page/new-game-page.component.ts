@@ -18,6 +18,7 @@ import {Params, Router} from "@angular/router";
 import {Player} from "../../shared/models/player";
 import {Checkout} from "../../shared/models/darts";
 import { v4 as uuidv4 } from 'uuid';
+import {randomColor} from "../../shared/utils/utils";
 
 @Component({
   selector: 'app-new-game-page',
@@ -64,7 +65,7 @@ export class NewGamePageComponent implements OnInit{
   ];
 
   protected players: Player[] = [
-    {name: 'Player 1', color: '#fbbf24'},
+    {name: 'Player1', color: '#fbbf24'},
   ]
 
   private rollingPlayerCnt = 1;
@@ -93,7 +94,7 @@ export class NewGamePageComponent implements OnInit{
 
   onPlayerAdd() {
     this.rollingPlayerCnt++;
-    this.players.push({name: `Player ${this.rollingPlayerCnt}`, color: '#fbbf24'});
+    this.players.push({name: `Player${this.rollingPlayerCnt}`, color: randomColor()});
     console.log(this.players);
   }
 
