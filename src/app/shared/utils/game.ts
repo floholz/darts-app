@@ -1,4 +1,4 @@
-import {DartsConfig, LegScores, SetScores} from "../models/darts";
+import {DartsConfig, DartScore, LegScores, SetScores} from "../models/darts";
 import {GamePlayer, Player} from "../models/player";
 
 export class Game {
@@ -20,13 +20,14 @@ export class Game {
   }
 
   public static parseGame(game: Game): Game {
-    const newGame = new Game(game.config, game.players, game.uuid);
-    newGame.activePlayer = game.activePlayer;
+    const newGame = new Game(game.config, [], game.uuid);
+    newGame.activeDart = game.activeDart;
     newGame.activeVisit = game.activeVisit;
     newGame.activeLeg = game.activeLeg;
     newGame.activeSet = game.activeSet;
     newGame.activePlayer = game.activePlayer;
     newGame.startingPlayer = game.startingPlayer;
+    newGame.players = game.players;
     return newGame;
   }
 
@@ -57,13 +58,47 @@ export class Game {
 
       if (this.activePlayer === this.startingPlayer) {
         this.activeVisit++;
+        this.players[this.activePlayer].history[this.activeSet][this.activeLeg].push([undefined, undefined, undefined]);
       }
+    }
+  }
+
+  public revertScore(steps: number): void {
+    for (let step = 0; step < steps; step++) {
+      if (this.activeDart === 0
+        && this.activeVisit === 0
+        && this.activeLeg === 0
+        && this.activeSet === 0
+        && this.activePlayer === this.startingPlayer
+      ) {
+        return;
+      }
+      // update dart
+      const dartOverflow = this.prevDart();
+      let playerOverflow = false;
+      if (dartOverflow) {
+        const leg = this.players[this.activePlayer].history[this.activeSet][this.activeLeg];
+        if (leg.length > 1) {
+          leg.pop();
+        }
+        playerOverflow = this.prevPlayer();
+      }
+      let visitOverflow = false;
+      if (playerOverflow) {
+        visitOverflow = this.prevVisit();
+      }
+      if (visitOverflow) return;
+      // revert dart
+      const score = this.players[this.activePlayer].history[this.activeSet][this.activeLeg][this.activeVisit][this.activeDart];
+      this.players[this.activePlayer].score += score??0;
+      this.players[this.activePlayer].history[this.activeSet][this.activeLeg][this.activeVisit][this.activeDart] = undefined;
     }
   }
 
   private initPlayers(config: DartsConfig, pls: Player[]) {
     pls.forEach((player, idx) => {
       const history: SetScores[] = [... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
+      history[0][0].push([undefined, undefined, undefined]);
       this.players.push({
         id: 'p-' + idx,
         name: player.name,
@@ -78,5 +113,49 @@ export class Game {
 
   private resetScores(){
     this.players.forEach(player => player.score = this.config.score);
+  }
+
+  private nextDart(): boolean {
+    this.activeDart = (this.activeDart+1)%3;
+    return this.activeDart === 0;
+  }
+
+  private prevDart():boolean {
+    const temp = this.activeDart - 1;
+    if (temp < 0) {
+      this.activeDart = 2;
+      return true;
+    }
+    this.activeDart = temp;
+    return false;
+  }
+
+  private nextPlayer(): boolean {
+    this.activePlayer = (this.activePlayer+1)%this.players.length;
+    return this.activePlayer === 0;
+  }
+
+  private prevPlayer(): boolean {
+    const temp = this.activePlayer - 1;
+    if (temp < 0) {
+      this.activePlayer = this.players.length - 1;
+      return true;
+    }
+    this.activePlayer = temp;
+    return false;
+  }
+
+  // private nextVisit(): boolean {
+  //   this.activeVisit = (this.activeVisit+1)%this.players.length;
+  //   return this.activePlayer === 0;
+  // }
+
+  private prevVisit(): boolean {
+    if (this.activeVisit > 0) {
+      this.activeVisit--;
+      return false;
+    }
+    // todo: update sets and legs
+    return true;
   }
 }

@@ -1,7 +1,7 @@
 <div id="play-page" >
   <div id="score-area" #scoreArea (window:resize)="getCarouselNumber(scoreArea)">
     <p-inputGroup class="score-input">
-      <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()"/>
+      <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()" (keydown.backspace)="onInputDelete()"/>
       <p-button [icon]="'fas fa-keyboard'" [severity]="showVirtualKeyboard ? undefined : 'secondary'" (click)="toggleVirtualKeyboard(scoreArea)"></p-button>
     </p-inputGroup>
     <p-carousel *ngIf="carouselState" id="player-carousel" [value]="game.players" [numVisible]="carouselNumVisible" [numScroll]="1" [responsiveOptions]="responsiveOptions">
@@ -32,6 +32,6 @@
     </p-carousel>
   </div>
   <div id="input-area" *ngIf="showVirtualKeyboard">
-    <app-virtual-keyboard id="virtual-keyboard" defaultFontSize="3rem" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()"></app-virtual-keyboard>
+    <app-virtual-keyboard id="virtual-keyboard" defaultFontSize="3rem" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()" (onDelete)="onVkbDelete($event)"></app-virtual-keyboard>
   </div>
 </div>

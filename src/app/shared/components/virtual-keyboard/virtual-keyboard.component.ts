@@ -24,6 +24,7 @@ export class VirtualKeyboardComponent implements OnInit, OnDestroy {
   @Output() onChange = new EventEmitter<string | number>();
   @Output() onKeyPressed = new EventEmitter<KBCode>();
   @Output() onSubmit = new EventEmitter<void>();
+  @Output() onDelete = new EventEmitter<boolean>();
 
   private end$: Subject<void> = new Subject<void>();
 
@@ -39,19 +40,21 @@ export class VirtualKeyboardComponent implements OnInit, OnDestroy {
   }
 
   onNumberPressed(key: KBCode, num: number) {
-    this.dataFormControl.patchValue(this.dataFormControl.value*10 + num);
     this.onKeyPressed.emit(key);
+    this.dataFormControl.patchValue(this.dataFormControl.value*10 + num);
   }
 
   onBackspacePressed(key: KBCode): void {
+    this.onKeyPressed.emit(key);
+    console.log(this.dataFormControl.value, this.dataFormControl.value != null);
+    this.onDelete.emit(this.dataFormControl.value != null);
+
     const value = Math.floor(this.dataFormControl.value/10);
     if (value === 0) {
       this.dataFormControl.reset();
     } else {
       this.dataFormControl.patchValue(value);
     }
-
-    this.onKeyPressed.emit(key);
   }
 
   onEnterPressed(key: KBCode): void {

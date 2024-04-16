@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
-import {ActivatedRoute, ActivatedRouteSnapshot, Params, Router} from "@angular/router";
-import {buildQueryParamsFromPlayers, parsePlayersFromQueryParams, Player} from "../../shared/models/player";
-import {DartsConfig} from "../../shared/models/darts";
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
+import {buildQueryParamsFromPlayers} from "../../shared/models/player";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {Game} from "../../shared/utils/game";
 import {InputGroupModule} from "primeng/inputgroup";
@@ -17,10 +16,11 @@ import {StyleClassModule} from "primeng/styleclass";
 import {FieldsetModule} from "primeng/fieldset";
 import {AvatarModule} from "primeng/avatar";
 import {ScrollPanelModule} from "primeng/scrollpanel";
-import {Carousel, CarouselModule} from "primeng/carousel";
+import {CarouselModule} from "primeng/carousel";
 import {DividerModule} from "primeng/divider";
 import {LocalStorageService} from "../../shared/services/local-storage.service";
-import {gameUuidGuard} from "../../shared/guards/game-uuid.guard";
+import {KBCode} from "../../shared/models/kb-code";
+import {pairwise, startWith, Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-play-page',
@@ -45,7 +45,9 @@ import {gameUuidGuard} from "../../shared/guards/game-uuid.guard";
   templateUrl: './play-page.component.html',
   styleUrl: './play-page.component.scss'
 })
-export class PlayPageComponent {
+export class PlayPageComponent implements OnInit, OnDestroy, AfterViewInit{
+
+  @ViewChild('scoreArea', { static: false }) scoreArea!: ElementRef<HTMLDivElement>;
 
   protected readonly PrimeIcons = PrimeIcons;
   protected readonly game: Game;
@@ -64,6 +66,9 @@ export class PlayPageComponent {
     },
   ];
 
+  private revertEnabled = true;
+  private end$: Subject<void> = new Subject<void>()
+
   constructor(
     deviceService: DeviceDetectorService,
     private readonly activatedRoute: ActivatedRoute,
@@ -77,6 +82,26 @@ export class PlayPageComponent {
     this.fixQueryParams();
   }
 
+  ngOnInit() {
+    this.scoreFormControl.valueChanges.pipe(takeUntil(this.end$)).subscribe(value => {
+      if (value != null) {
+        this.revertEnabled = false;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.end$.next();
+    this.end$.complete();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.getCarouselNumber(this.scoreArea.nativeElement);
+      this.updateCarousel(true);
+    });
+  }
+
   addScore() {
     if (this.scoreFormControl.value == null) return;
 
@@ -87,12 +112,32 @@ export class PlayPageComponent {
     this.localStorageService.saveGame(this.game);
   }
 
+  revertScore() {
+    this.game.revertScore(1);
+    this.scoreFormControl.reset();
+    this.localStorageService.saveGame(this.game);
+  }
+
   toggleVirtualKeyboard(elem: HTMLElement) {
     this.showVirtualKeyboard = !this.showVirtualKeyboard;
     setTimeout(() => {
       this.getCarouselNumber(elem);
       this.updateCarousel(true);
     });
+  }
+
+  onInputDelete() {
+    if (this.revertEnabled) {
+      this.revertScore();
+    } else if (this.scoreFormControl.value == null) {
+      this.revertEnabled = true;
+    }
+  }
+
+  onVkbDelete(changed: boolean) {
+    if (!changed) {
+      this.revertScore();
+    }
   }
 
   getCarouselNumber(elem: HTMLElement) {
