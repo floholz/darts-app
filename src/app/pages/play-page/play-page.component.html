@@ -23,8 +23,8 @@
                 <span class="font-bold color-green">Won</span>
               </ng-template>
               <ng-template #standing>
-                <span>{{player.setsWon}}</span>
-                <span>{{player.legHistory[game.activeSet]}}</span>
+                <span *ngIf="game.config.sets > 1" [style]="{'display': 'flex', 'align-items': 'center', 'gap': '0.5rem'}"><i class="fas fa-s icon-set-leg"></i> {{player.setsWon}}</span>
+                <span *ngIf="game.config.legs > 1" [style]="{'display': 'flex', 'align-items': 'center', 'gap': '0.5rem'}"><i class="fas fa-l icon-set-leg"></i> {{player.legHistory[game.activeSet]}}</span>
               </ng-template>
             </div>
             <div class="player-content" [class.active-player]="isActivePlayer(player?.id)">
