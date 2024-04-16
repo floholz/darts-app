@@ -1,8 +1,23 @@
 <div id="landing-page">
-  <h1 class="welcome">Welcome to my simple and <span primary>100% FREE</span> darts app 👋🎯</h1>
-  <p-button [icon]="PrimeIcons.PLAY"
-            [label]="'New&nbsp;Game'"
-            size="large"
-            (onClick)="navigateToNewGamePage()"
-  ></p-button>
+  <main>
+    <div class="welcome">
+      <span>👋 Welcome to my simple</span>
+      <span primary big>100% FREE</span>
+      <span>and <a href="https://github.com/floholz/darts-app" target="_blank">Open Source</a> darts app 🎯</span>
+    </div>
+    <p-button id="start-btn"
+              [icon]="PrimeIcons.PLAY"
+              [label]="'New&nbsp;Game'"
+              size="large"
+              (onClick)="navigateToNewGamePage()"
+    ></p-button>
+  </main>
+  <footer>
+    <span>Made by <a href="https://www.floholz.com" target="_blank">floholz</a> with <i class="fas fa-heart"></i></span>
+    <div class="icon-container">
+      <a href="https://github.com/floholz" target="_blank"><i class="fa-brands fa-github"></i></a>
+      <a href="https://twitter.com/floholz_" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="https://www.linkedin.com/in/florian-holzmann-35b763250/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+    </div>
+  </footer>
 </div>

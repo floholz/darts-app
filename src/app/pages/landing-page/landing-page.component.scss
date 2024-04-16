@@ -2,11 +2,64 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   height: 100%;
+  padding: var(--page-padding);
 
-  .welcome {
-    position: absolute;
-    top: 20%;
+  main {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+    padding-bottom: 5rem;
+
+    .welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 3rem;
+      font-weight: bold;
+
+      [big] {
+        font-size: 4rem;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    #start-btn {
+
+    }
+  }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    background: var(--surface-c);
+    border-radius: 5rem;
+    padding: 0.5rem 1.5rem;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+        color: var(--cyan-400)
+      }
+    }
+
+    .icon-container {
+      display: flex;
+      gap: 0.5rem;
+    }
   }
 }
