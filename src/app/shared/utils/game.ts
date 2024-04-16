@@ -36,17 +36,26 @@ export class Game {
     if (!visit) {
       this.players[this.activePlayer].history[this.activeSet][this.activeLeg].push([undefined, undefined, undefined]);
     }
-    this.players[this.activePlayer].history[this.activeSet][this.activeLeg][this.activeVisit][this.activeDart] = score;
-    this.players[this.activePlayer].score -=  score;
-    console.log(this.players[this.activePlayer]);
 
-    if (this.players[this.activePlayer].score <= 0) {
-      console.log(this.players[this.activePlayer].name, 'won the leg');
-      this.players[this.activePlayer].legsWon++;
-      this.resetScores();
-      this.startingPlayer++;
-      this.activePlayer = this.startingPlayer;
-      return;
+    if (this.config.checkout > this.players[this.activePlayer].score - score) {
+      console.log('BUST');
+      this.revertScore(this.activeDart);
+      this.activeDart = 2; // so it will change to next player
+    } else {
+      this.players[this.activePlayer].history[this.activeSet][this.activeLeg][this.activeVisit][this.activeDart] = score;
+      this.players[this.activePlayer].score -=  score;
+
+      if (this.players[this.activePlayer].score <= 0) {
+        console.log(this.players[this.activePlayer].name, 'won the leg');
+        this.players[this.activePlayer].legsWon++;
+        this.resetScores();
+        this.startingPlayer++;
+        this.activePlayer = this.startingPlayer;
+        this.activeDart = 0;
+        this.activeVisit = 0;
+        this.activeLeg++;
+        return;
+      }
     }
 
     // update dart
@@ -113,6 +122,10 @@ export class Game {
 
   private resetScores(){
     this.players.forEach(player => player.score = this.config.score);
+  }
+
+  private checkBust(scoreLeft: number, score: number): boolean {
+    return this.config.checkout > scoreLeft - score;
   }
 
   private nextDart(): boolean {
