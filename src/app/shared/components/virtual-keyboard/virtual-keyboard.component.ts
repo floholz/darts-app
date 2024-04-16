@@ -1,9 +1,8 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {Subject, takeUntil} from "rxjs";
 import {VirtualKeyComponent} from "../virtual-key/virtual-key.component";
 import {KBCode} from "../../models/kb-code";
-import {PrimeIcons} from "primeng/api";
 
 @Component({
   selector: 'app-virtual-keyboard',
@@ -20,7 +19,6 @@ export class VirtualKeyboardComponent implements OnInit, OnDestroy {
   @ViewChild('key3x', { static: false }) key3x!: VirtualKeyComponent;
 
   protected readonly Key = KBCode;
-  protected readonly PrimeIcons = PrimeIcons;
 
   @Input() dataFormControl: FormControl<number> = new FormControl();
   @Input() defaultFontSize?: string;

@@ -5,7 +5,7 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {Game, GameEvent} from "../../shared/utils/game";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputTextModule} from "primeng/inputtext";
-import {Button, ButtonModule} from "primeng/button";
+import {ButtonModule} from "primeng/button";
 import {ConfirmationService, MessageService, PrimeIcons} from "primeng/api";
 import {InputNumberModule} from "primeng/inputnumber";
 import {VirtualKeyboardComponent} from "../../shared/components/virtual-keyboard/virtual-keyboard.component";
