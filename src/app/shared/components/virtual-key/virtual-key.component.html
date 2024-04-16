@@ -1,9 +1,9 @@
 <p-button
   class="virtual-key square"
   (onClick)="onKey()"
-  [severity]="btnStyle"
+  [severity]="getKeyStyle()"
   [label]="getKeyLabel()"
-  [icon]="icon"
+  [icon]="getKeyIcon()"
   [iconPos]="iconPos"
   [styleClass]="'key-button'"
   [style.font-size]="fontSize"

@@ -48,6 +48,7 @@
 
           &.active-player {
             border-color: var(--player-color);
+            border-width: 3px;
           }
 
           .rest-score {
@@ -62,6 +63,10 @@
             grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 10px;
             align-items: center;
+
+            &.bust {
+              color: var(--red-600);
+            }
 
             .visit-nr {
               font-size: 0.8em;

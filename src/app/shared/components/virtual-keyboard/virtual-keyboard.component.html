@@ -16,4 +16,6 @@
   <app-virtual-key [keys]="Key.Numpad3" [text]="'3'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 3)"></app-virtual-key>
 
   <app-virtual-key [keys]="Key.Numpad0" class="zero" [text]="'0'" [fontSize]="defaultFontSize" (onKeyPressed)="onNumberPressed($event, 0)"></app-virtual-key>
+  <app-virtual-key #key2x [keys]="Key._EMPTY_" [isToggle]="true" [text]="'2x'" btnStyle="secondary" toggleStyle="success" [fontSize]="defaultFontSize" (onToggled)="onMultiplierPressed($event, 2)"></app-virtual-key>
+  <app-virtual-key #key3x [keys]="Key._EMPTY_" [isToggle]="true" [text]="'3x'" btnStyle="secondary" toggleStyle="success" [fontSize]="defaultFontSize" (onToggled)="onMultiplierPressed($event, 3)"></app-virtual-key>
 </div>

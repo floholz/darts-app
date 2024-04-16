@@ -1,6 +1,7 @@
 // snapshot from https://github.com/HubertY/ts-code-enum since npm-package introduces build error.
 
 export enum KBCode {
+    _EMPTY_ = "",
     Escape = "Escape",
     Digit1 = "Digit1",
     Digit2 = "Digit2",

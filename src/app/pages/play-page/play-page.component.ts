@@ -168,4 +168,9 @@ export class PlayPageComponent implements OnInit, OnDestroy, AfterViewInit{
       queryParams: buildQueryParamsFromPlayers(this.game.players),
     })
   }
+
+  isActivePlayer(playerId: string) {
+    if (!this.game) return false;
+    return this.game.players[this.game.activePlayer]?.id === playerId
+  }
 }

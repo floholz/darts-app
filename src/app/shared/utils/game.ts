@@ -37,23 +37,43 @@ export class Game {
       this.players[this.activePlayer].history[this.activeSet][this.activeLeg].push([undefined, undefined, undefined]);
     }
 
-    if (this.config.checkout > this.players[this.activePlayer].score - score) {
+    visit[this.activeDart] = score;
+    this.players[this.activePlayer].score -=  score;
+
+    if (this.players[this.activePlayer].score < 0 || (0 < this.players[this.activePlayer].score && this.players[this.activePlayer].score < this.config.checkout)) {
       console.log('BUST');
-      this.revertScore(this.activeDart);
+      for (let i = 0; i < 3; i++) {
+        this.players[this.activePlayer].score += visit[i]??0;
+      }
+      this.players[this.activePlayer].busts[this.activeSet][this.activeLeg].push(this.activeVisit);
       this.activeDart = 2; // so it will change to next player
     } else {
-      this.players[this.activePlayer].history[this.activeSet][this.activeLeg][this.activeVisit][this.activeDart] = score;
-      this.players[this.activePlayer].score -=  score;
-
       if (this.players[this.activePlayer].score <= 0) {
         console.log(this.players[this.activePlayer].name, 'won the leg');
-        this.players[this.activePlayer].legsWon++;
+        this.players[this.activePlayer].legHistory[this.activeSet]++;
+        if (this.players[this.activePlayer].legHistory[this.activeSet] >= this.config.legs) {
+          console.log(this.players[this.activePlayer].name, 'won the set');
+          this.players[this.activePlayer].setHistory[this.activeSet] = true;
+          this.players[this.activePlayer].setsWon++;
+          if (this.players[this.activePlayer].setsWon >= this.config.sets) {
+            console.log(this.players[this.activePlayer].name, 'won the game');
+            return;
+          }
+          this.resetScores();
+          this.activeDart = 0;
+          this.activeVisit = 0;
+          this.activeSet++;
+          this.initNextSet();
+          this.activeLeg = 0;
+          return;
+        }
         this.resetScores();
-        this.startingPlayer++;
-        this.activePlayer = this.startingPlayer;
         this.activeDart = 0;
         this.activeVisit = 0;
         this.activeLeg++;
+        this.initNextLeg();
+        this.startingPlayer = (this.startingPlayer+1)%this.players.length;
+        this.activePlayer = this.startingPlayer;
         return;
       }
     }
@@ -67,7 +87,9 @@ export class Game {
 
       if (this.activePlayer === this.startingPlayer) {
         this.activeVisit++;
-        this.players[this.activePlayer].history[this.activeSet][this.activeLeg].push([undefined, undefined, undefined]);
+        for (const player of this.players) {
+          player.history[this.activeSet][this.activeLeg].push([undefined, undefined, undefined]);
+        }
       }
     }
   }
@@ -106,18 +128,37 @@ export class Game {
 
   private initPlayers(config: DartsConfig, pls: Player[]) {
     pls.forEach((player, idx) => {
-      const history: SetScores[] = [... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
-      history[0][0].push([undefined, undefined, undefined]);
+      const history: SetScores[] = [[[[undefined, undefined, undefined]]]]; //[... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
+      // history[0][0].push([undefined, undefined, undefined]);
+      const busts: number[][][] = [[[]]]; //[... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
       this.players.push({
         id: 'p-' + idx,
         name: player.name,
         color: player.color,
         score: this.config.score,
         setsWon: 0,
-        legsWon: 0,
+        // legsWon: 0,
+        setHistory: [false],
+        legHistory: [0],
         history: history,
+        busts: busts,
       });
     });
+  }
+
+  private initNextLeg() {
+    for (const player of this.players) {
+      player.history[this.activeSet].push([[undefined, undefined, undefined]]);
+      player.busts[this.activeSet].push([]);
+      player.legHistory.push(0);
+    }
+  }
+  private initNextSet() {
+    for (const player of this.players) {
+      player.history.push([[[undefined, undefined, undefined]]]);
+      player.busts.push([[]]);
+      player.setHistory.push(false);
+    }
   }
 
   private resetScores(){

@@ -1,6 +1,6 @@
 import {SetScores} from "./darts";
 import {Params} from "@angular/router";
-import {isHexColor, randomColor} from "../utils/utils";
+import {randomColor} from "../utils/utils";
 
 export type Player = {
   name: string,
@@ -18,8 +18,11 @@ export type GamePlayer = {
   color: string,
   score: number,
   setsWon: number,
-  legsWon: number,
-  history: SetScores[]
+  // legsWon: number,
+  setHistory: boolean[],
+  legHistory: number[],
+  history: SetScores[],
+  busts: number[][][],
 }
 
 export function parsePlayersFromQueryParams(params: Params): Player[] {
