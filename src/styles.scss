@@ -73,3 +73,7 @@ span {
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
 }
+
+.p-confirm-popup .p-confirm-popup-message {
+  white-space: pre-wrap;
+}

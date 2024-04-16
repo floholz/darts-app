@@ -1,5 +1,14 @@
-import {DartsConfig, DartScore, LegScores, SetScores} from "../models/darts";
+import {DartsConfig, SetScores} from "../models/darts";
 import {GamePlayer, Player} from "../models/player";
+import {Subject} from "rxjs";
+
+export enum GameEvent {
+  GAME_WIN,
+  LEG_WIN,
+  SET_WIN,
+  BUST,
+  RESTART,
+}
 
 export class Game {
   uuid: string;
@@ -13,10 +22,12 @@ export class Game {
   activePlayer = 0;
   startingPlayer = 0;
 
+  gameEvents$ = new Subject<GameEvent>()
+
   constructor(config: DartsConfig, players: Player[], uuid: string) {
     this.uuid = uuid;
     this.config = config;
-    this.initPlayers(config, players);
+    this.initPlayers(players);
   }
 
   public static parseGame(game: Game): Game {
@@ -31,6 +42,11 @@ export class Game {
     return newGame;
   }
 
+  public static replacer(key: string, value: any) {
+    if (key === 'gameEvents$') return undefined;
+    return value;
+  }
+
   public addScore(score: number): void {
     let visit = this.players[this.activePlayer].history[this.activeSet][this.activeLeg][this.activeVisit];
     if (!visit) {
@@ -42,6 +58,7 @@ export class Game {
 
     if (this.players[this.activePlayer].score < 0 || (0 < this.players[this.activePlayer].score && this.players[this.activePlayer].score < this.config.checkout)) {
       console.log('BUST');
+      this.gameEvents$.next(GameEvent.BUST);
       for (let i = 0; i < 3; i++) {
         this.players[this.activePlayer].score += visit[i]??0;
       }
@@ -50,13 +67,16 @@ export class Game {
     } else {
       if (this.players[this.activePlayer].score <= 0) {
         console.log(this.players[this.activePlayer].name, 'won the leg');
+        this.gameEvents$.next(GameEvent.LEG_WIN);
         this.players[this.activePlayer].legHistory[this.activeSet]++;
         if (this.players[this.activePlayer].legHistory[this.activeSet] >= this.config.legs) {
           console.log(this.players[this.activePlayer].name, 'won the set');
+          this.gameEvents$.next(GameEvent.SET_WIN);
           this.players[this.activePlayer].setHistory[this.activeSet] = true;
           this.players[this.activePlayer].setsWon++;
           if (this.players[this.activePlayer].setsWon >= this.config.sets) {
             console.log(this.players[this.activePlayer].name, 'won the game');
+            this.gameEvents$.next(GameEvent.GAME_WIN);
             return;
           }
           this.resetScores();
@@ -126,18 +146,29 @@ export class Game {
     }
   }
 
-  private initPlayers(config: DartsConfig, pls: Player[]) {
+  public restartGame() {
+    this.activeDart = 0;
+    this.activeVisit = 0;
+    this.activeLeg = 0;
+    this.activeSet = 0;
+    this.activePlayer = 0;
+    this.startingPlayer = 0;
+    const pls: Player[] = this.players.map(p => {return {name: p.name, color: p.color}});
+    this.players = [];
+    this.initPlayers(pls);
+    this.gameEvents$.next(GameEvent.RESTART);
+  }
+
+  private initPlayers(pls: Player[]) {
     pls.forEach((player, idx) => {
-      const history: SetScores[] = [[[[undefined, undefined, undefined]]]]; //[... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
-      // history[0][0].push([undefined, undefined, undefined]);
-      const busts: number[][][] = [[[]]]; //[... Array(this.config.sets)].map(() => [... Array(this.config.legs)].map(() => []));
+      const history: SetScores[] = [[[[undefined, undefined, undefined]]]];
+      const busts: number[][][] = [[[]]];
       this.players.push({
         id: 'p-' + idx,
         name: player.name,
         color: player.color,
         score: this.config.score,
         setsWon: 0,
-        // legsWon: 0,
         setHistory: [false],
         legHistory: [0],
         history: history,

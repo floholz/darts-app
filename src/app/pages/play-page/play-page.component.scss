@@ -1,123 +1,142 @@
 #play-page {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1rem;
-  height: 100%;
   padding: var(--page-padding);
+  height: 100%;
 
-  #score-area {
-    flex: 1;
+  #header {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
     gap: 1rem;
 
-    .score-input {
-      max-width: 50vw;
-      margin: auto;
+    .icon-btn {
+      font-size: 1.8rem;
+      font-weight: bold;
     }
 
-    #player-carousel {
+    .score-input {
+      max-width: 50%;
+      margin-left: auto;
+    }
+  }
+
+  #content {
+    flex: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    #score-area {
       flex: 1;
-      display: grid;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
 
-      .player-field {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
-        height: 100%;
+      #player-carousel {
+        flex: 1;
+        display: grid;
 
-        .player-header {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          border: 1px solid var(--border-color);
-          border-radius: var(--start-radius) var(--end-radius) var(--end-radius) var(--start-radius);
-          overflow: hidden;
-          font-size: 1.5rem;
-        }
-
-        .player-content {
-          flex: 1;
+        .player-field {
           display: flex;
           flex-direction: column;
-          padding: 4px;
-          border: 1px solid var(--border-color);
-          border-radius: var(--start-radius) var(--end-radius) var(--end-radius) var(--start-radius);
+          align-items: stretch;
+          gap: 1rem;
+          height: 100%;
 
-          &.active-player {
-            border-color: var(--player-color);
-            border-width: 3px;
-          }
-
-          .rest-score {
+          .player-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 3rem;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--start-radius) var(--end-radius) var(--end-radius) var(--start-radius);
+            overflow: hidden;
+            font-size: 1.5rem;
           }
 
-          .visit {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 10px;
-            align-items: center;
+          .player-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--start-radius) var(--end-radius) var(--end-radius) var(--start-radius);
 
-            &.bust {
-              color: var(--red-600);
+            &.active-player {
+              border-color: var(--player-color);
+              border-width: 3px;
             }
 
-            .visit-nr {
-              font-size: 0.8em;
-              color: var(--gray-400);
+            .rest-score {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 3rem;
             }
 
-            &.header {
-              .dart-nr {
-                background: white;
-                color: var(--surface-ground);
-                border-radius: 50% 50% 50% 15%;
-                aspect-ratio: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 1.2rem;
-                font-size: 0.8rem;
-                font-weight: bold;
+            .visit {
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr 1fr;
+              gap: 10px;
+              align-items: center;
+
+              &.bust {
+                color: var(--red-600);
+              }
+
+              .visit-nr {
+                font-size: 0.8em;
+                color: var(--gray-400);
+              }
+
+              &.header {
+                .dart-nr {
+                  background: white;
+                  color: var(--surface-ground);
+                  border-radius: 50% 50% 50% 15%;
+                  aspect-ratio: 1;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: 1.2rem;
+                  font-size: 0.8rem;
+                  font-weight: bold;
+                }
               }
             }
           }
         }
       }
     }
-  }
 
-  #input-area {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
-
-    #virtual-keyboard {
+    #input-area {
+      width: 50%;
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+
+      #virtual-keyboard {
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
 }
 
 @media (max-aspect-ratio: 5/4) {
   #play-page {
-    flex-direction: column;
+    #content {
+      flex-direction: column;
 
-    #input-area {
-      flex-direction: row;
-      width: auto;
-      height: 50%;
-
-      #virtual-keyboard {
+      #input-area {
         flex-direction: row;
+        width: auto;
+        height: 50%;
+
+        #virtual-keyboard {
+          flex-direction: row;
+        }
       }
     }
   }

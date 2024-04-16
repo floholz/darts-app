@@ -47,7 +47,7 @@ export class LocalStorageService {
     } else {
       savedGames.push(game);
     }
-    this.setItem(this.LS_KEY_GAMES, JSON.stringify(savedGames));
+    this.setItem(this.LS_KEY_GAMES, JSON.stringify(savedGames, Game.replacer));
   }
 
   getSavedGame(uuid: string): Game | null {

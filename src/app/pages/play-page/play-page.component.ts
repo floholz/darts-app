@@ -2,11 +2,11 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from
 import {ActivatedRoute, Router} from "@angular/router";
 import {buildQueryParamsFromPlayers} from "../../shared/models/player";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
-import {Game} from "../../shared/utils/game";
+import {Game, GameEvent} from "../../shared/utils/game";
 import {InputGroupModule} from "primeng/inputgroup";
 import {InputTextModule} from "primeng/inputtext";
-import {ButtonModule} from "primeng/button";
-import {PrimeIcons} from "primeng/api";
+import {Button, ButtonModule} from "primeng/button";
+import {ConfirmationService, MessageService, PrimeIcons} from "primeng/api";
 import {InputNumberModule} from "primeng/inputnumber";
 import {VirtualKeyboardComponent} from "../../shared/components/virtual-keyboard/virtual-keyboard.component";
 import {NgForOf, NgIf} from "@angular/common";
@@ -19,8 +19,11 @@ import {ScrollPanelModule} from "primeng/scrollpanel";
 import {CarouselModule} from "primeng/carousel";
 import {DividerModule} from "primeng/divider";
 import {LocalStorageService} from "../../shared/services/local-storage.service";
+import {Subject, takeUntil} from "rxjs";
+import {VirtualKeyComponent} from "../../shared/components/virtual-key/virtual-key.component";
 import {KBCode} from "../../shared/models/kb-code";
-import {pairwise, startWith, Subject, takeUntil} from "rxjs";
+import {ToastModule} from "primeng/toast";
+import {ConfirmPopupModule} from "primeng/confirmpopup";
 
 @Component({
   selector: 'app-play-page',
@@ -40,7 +43,10 @@ import {pairwise, startWith, Subject, takeUntil} from "rxjs";
     NgForOf,
     ScrollPanelModule,
     CarouselModule,
-    DividerModule
+    DividerModule,
+    VirtualKeyComponent,
+    ToastModule,
+    ConfirmPopupModule
   ],
   templateUrl: './play-page.component.html',
   styleUrl: './play-page.component.scss'
@@ -49,6 +55,7 @@ export class PlayPageComponent implements OnInit, OnDestroy, AfterViewInit{
 
   @ViewChild('scoreArea', { static: false }) scoreArea!: ElementRef<HTMLDivElement>;
 
+  protected readonly KBCode = KBCode;
   protected readonly PrimeIcons = PrimeIcons;
   protected readonly game: Game;
   protected scoreFormControl = new FormControl();
@@ -74,11 +81,14 @@ export class PlayPageComponent implements OnInit, OnDestroy, AfterViewInit{
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly localStorageService: LocalStorageService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
   ) {
     this.showVirtualKeyboard = deviceService.isMobile() || deviceService.isTablet();
     console.log(deviceService.getDeviceInfo());
 
     this.game = Game.parseGame(activatedRoute.snapshot.data['game']);
+    this.game.gameEvents$.pipe(takeUntil(this.end$)).subscribe(event => this.handleGameEvents(event));
     this.fixQueryParams();
   }
 
@@ -150,6 +160,46 @@ export class PlayPageComponent implements OnInit, OnDestroy, AfterViewInit{
     }
   }
 
+  isActivePlayer(playerId: string) {
+    if (!this.game) return false;
+    return this.game.players[this.game.activePlayer]?.id === playerId
+  }
+
+  toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen()
+        .catch((err) => {
+          console.error('error exiting fullscreen', err);
+        });
+    } else {
+      document.documentElement.requestFullscreen()
+        .catch((err) => {
+          console.error('error entering fullscreen', err);
+        });
+    }
+  }
+
+  restartGame(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure you want to restart this game? \nThe current progress will be discarded.',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.game.restartGame();
+      },
+    });
+  }
+
+  newGame(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Leave this game and start a new one?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.router.navigate(['new-game']).catch(console.error)
+      },
+    });
+  }
 
   protected carouselNumVisible = 1;
   protected carouselState = true;
@@ -169,8 +219,59 @@ export class PlayPageComponent implements OnInit, OnDestroy, AfterViewInit{
     })
   }
 
-  isActivePlayer(playerId: string) {
-    if (!this.game) return false;
-    return this.game.players[this.game.activePlayer]?.id === playerId
+  private handleGameEvents(event: GameEvent) {
+    switch (event) {
+      case GameEvent.GAME_WIN:
+        this.gameWon();
+        break;
+      case GameEvent.LEG_WIN:
+        this.legWon();
+        break;
+      case GameEvent.SET_WIN:
+        this.setWon();
+        break;
+      case GameEvent.BUST:
+        this.playerBust();
+        break;
+      case GameEvent.RESTART:
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Game Restarted',
+        });
+        break;
+    }
+  }
+
+  private gameWon() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Game Won',
+      detail: `${this.game.players[this.game.activePlayer].name} won the game`,
+      life: 10000,
+    });
+  }
+
+  private legWon() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Leg Won',
+      detail: `${this.game.players[this.game.activePlayer].name} won this leg`,
+    });
+  }
+
+  private setWon() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Set Won',
+      detail: `${this.game.players[this.game.activePlayer].name} won this set`,
+    });
+  }
+
+  private playerBust() {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Bust',
+      detail: `${this.game.players[this.game.activePlayer].name}`,
+    });
   }
 }

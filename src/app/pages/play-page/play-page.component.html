@@ -1,45 +1,54 @@
 <div id="play-page">
-  <div id="score-area" #scoreArea (window:resize)="getCarouselNumber(scoreArea)">
+  <p-toast [position]="'top-right'" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
+  <div id="header">
+    <p-confirmPopup></p-confirmPopup>
+    <app-virtual-key [style]="{'aspect-ratio': 1}" [keys]="KBCode._EMPTY_" [iconOnly]="true" [isToggle]="true" [icon]="'fas fa-expand'" [toggleIcon]="'fas fa-compress'" [toggleStyle]="undefined" (onToggled)="toggleFullscreen()"></app-virtual-key>
+    <p-button class="icon-btn" [icon]="PrimeIcons.PLUS" (click)="newGame($event)"></p-button>
+    <p-button class="icon-btn" [icon]="PrimeIcons.REFRESH" (click)="restartGame($event)"></p-button>
     <p-inputGroup class="score-input">
       <p-inputNumber mode="decimal" placeholder="Score" [formControl]="scoreFormControl" [useGrouping]="false" (keydown.enter)="addScore()" (keydown.backspace)="onInputDelete()"/>
       <p-button [icon]="'fas fa-keyboard'" [severity]="showVirtualKeyboard ? undefined : 'secondary'" (click)="toggleVirtualKeyboard(scoreArea)"></p-button>
     </p-inputGroup>
-    <p-carousel *ngIf="carouselState" id="player-carousel" [value]="game.players" [numVisible]="carouselNumVisible" [numScroll]="1" [responsiveOptions]="responsiveOptions">
-      <ng-template let-player pTemplate="item">
-        <div class="player-field" [style]="{'--player-color': player.color}">
-          <div class="player-header">
-            <i [class]="PrimeIcons.USER" [style]="{'font-size': 'inherit', 'padding': '4px', 'background-color': player.color, color: '#fff' }"></i>
-            <span class="font-bold">{{player.name}}</span>
-            <ng-container *ngIf="player.setsWon >= game.config.sets; then  won; else standing"></ng-container>
-            <ng-template #won>
-              <span class="font-bold color-green">Won</span>
-            </ng-template>
-            <ng-template #standing>
-              <span>{{player.setsWon}}</span>
-              <span>{{player.legHistory[game.activeSet]}}</span>
-            </ng-template>
-          </div>
-          <div class="player-content" [class.active-player]="isActivePlayer(player?.id)">
-            <div class="rest-score">
-              {{player.score}}
-            </div>
-            <div class="visit header">
-              <span> Dart</span>
-              <span class="dart-nr">1</span>
-              <span class="dart-nr">2</span>
-              <span class="dart-nr">3</span>
-            </div>
-            <p-divider></p-divider>
-            <div class="visit" *ngFor="let visit of player['history'][game.activeSet][game.activeLeg]; index as vi" [class.bust]="(player['busts'][game.activeSet][game.activeLeg]).includes(vi)">
-              <span class="visit-nr">{{vi+1}}:</span>
-              <span *ngFor="let dart of visit">{{dart}}</span>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-    </p-carousel>
   </div>
-  <div id="input-area" *ngIf="showVirtualKeyboard">
-    <app-virtual-keyboard id="virtual-keyboard" defaultFontSize="3rem" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()" (onDelete)="onVkbDelete($event)"></app-virtual-keyboard>
+  <div id="content">
+    <div id="score-area" #scoreArea (window:resize)="getCarouselNumber(scoreArea)">
+      <p-carousel *ngIf="carouselState" id="player-carousel" [value]="game.players" [numVisible]="carouselNumVisible" [numScroll]="1" [responsiveOptions]="responsiveOptions">
+        <ng-template let-player pTemplate="item">
+          <div class="player-field" [style]="{'--player-color': player.color}">
+            <div class="player-header">
+              <i [class]="PrimeIcons.USER" [style]="{'font-size': 'inherit', 'padding': '4px', 'background-color': player.color, color: '#fff' }"></i>
+              <span class="font-bold">{{player.name}}</span>
+              <ng-container *ngIf="player.setsWon >= game.config.sets; then  won; else standing"></ng-container>
+              <ng-template #won>
+                <span class="font-bold color-green">Won</span>
+              </ng-template>
+              <ng-template #standing>
+                <span>{{player.setsWon}}</span>
+                <span>{{player.legHistory[game.activeSet]}}</span>
+              </ng-template>
+            </div>
+            <div class="player-content" [class.active-player]="isActivePlayer(player?.id)">
+              <div class="rest-score">
+                {{player.score}}
+              </div>
+              <div class="visit header">
+                <span> Dart</span>
+                <span class="dart-nr">1</span>
+                <span class="dart-nr">2</span>
+                <span class="dart-nr">3</span>
+              </div>
+              <p-divider></p-divider>
+              <div class="visit" *ngFor="let visit of player['history'][game.activeSet][game.activeLeg]; index as vi" [class.bust]="(player['busts'][game.activeSet][game.activeLeg]).includes(vi)">
+                <span class="visit-nr">{{vi+1}}:</span>
+                <span *ngFor="let dart of visit">{{dart}}</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+    <div id="input-area" *ngIf="showVirtualKeyboard">
+      <app-virtual-keyboard id="virtual-keyboard" defaultFontSize="3rem" [dataFormControl]="scoreFormControl" (onSubmit)="addScore()" (onDelete)="onVkbDelete($event)"></app-virtual-keyboard>
+    </div>
   </div>
 </div>
