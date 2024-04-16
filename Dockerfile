@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1.4
 
+LABEL org.opencontainers.image.source=https://github.com/floholz/darts-app
+LABEL org.opencontainers.image.description="Dart App container image"
+
 FROM node:lts-bullseye-slim as builder
 
 RUN mkdir /darts-app
