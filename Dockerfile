@@ -1,17 +1,14 @@
-# syntax=docker/dockerfile:1.4
-
-FROM node:lts-bullseye-slim as builder
-
+# Stage 1: Build an Angular Docker Image
+FROM node:lts-bullseye-slim as build
 LABEL org.opencontainers.image.source=https://github.com/floholz/darts-app
 LABEL org.opencontainers.image.description="Dart App container image"
-
-RUN mkdir /darts-app
-WORKDIR /darts-app
-
-RUN npm install -g @angular/cli@17
-
-COPY package.json package-lock.json ./
+WORKDIR /app
+COPY package*.json /app/
 RUN npm ci
+COPY . /app
 
-COPY . .
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+RUN npm run build:prod
+# Stage 2, use the compiled app, ready for production with Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist/out/ /usr/share/nginx/html
+COPY /nginx.conf /etc/nginx/conf.d/default.conf
